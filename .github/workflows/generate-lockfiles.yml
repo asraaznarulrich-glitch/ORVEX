@@ -1,0 +1,65 @@
+name: Generate and verify npm lockfiles
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/generate-lockfiles.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lockfiles:
+    name: Generate lockfiles and verify clean installs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate frontend lockfile
+        working-directory: apps/web
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+
+      - name: Generate backend lockfile
+        working-directory: apps/api
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+
+      - name: Commit generated lockfiles
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/web/package-lock.json apps/api/package-lock.json
+          if git diff --cached --quiet; then
+            echo "Lockfiles are already up to date."
+          else
+            git commit -m "Add reproducible npm lockfiles"
+            git push
+          fi
+
+      - name: Install frontend from lockfile
+        working-directory: apps/web
+        run: npm ci
+
+      - name: Verify frontend
+        working-directory: apps/web
+        run: |
+          npm run typecheck
+          npm run build
+          npm test
+
+      - name: Install backend from lockfile
+        working-directory: apps/api
+        run: npm ci
+
+      - name: Verify backend
+        working-directory: apps/api
+        run: |
+          npm run typecheck
+          npm run build
+          npm test
