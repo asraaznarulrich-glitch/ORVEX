@@ -102,3 +102,58 @@ test("API refuses production startup without trusted CORS origins", async () => 
   assert.equal(exitCode, 1);
   assert.match(stderr, /CORS_ORIGINS must contain at least one trusted frontend origin/);
 });
+
+
+test("API refuses malformed CORS origins in production", async () => {
+  const child = spawn(process.execPath, [entrypoint.pathname], {
+    cwd: apiDirectory,
+    env: {
+      ...process.env,
+      NODE_ENV: "production",
+      PORT: "3001",
+      CORS_ORIGINS: "https://orvex.example.com/dashboard",
+    },
+    stdio: ["ignore", "ignore", "pipe"],
+  });
+  let stderr = "";
+  child.stderr.setEncoding("utf8");
+  child.stderr.on("data", (chunk) => { stderr += chunk; });
+
+  const exitCode = await Promise.race([
+    new Promise((resolve) => child.once("exit", resolve)),
+    delay(5000).then(() => null),
+  ]);
+  if (exitCode === null) {
+    child.kill("SIGKILL");
+    assert.fail("API did not reject the malformed CORS origin.");
+  }
+  assert.equal(exitCode, 1);
+  assert.match(stderr, /Invalid CORS origin/);
+});
+
+test("API refuses an invalid port", async () => {
+  const child = spawn(process.execPath, [entrypoint.pathname], {
+    cwd: apiDirectory,
+    env: {
+      ...process.env,
+      NODE_ENV: "test",
+      PORT: "70000",
+      CORS_ORIGINS: "http://localhost:3000",
+    },
+    stdio: ["ignore", "ignore", "pipe"],
+  });
+  let stderr = "";
+  child.stderr.setEncoding("utf8");
+  child.stderr.on("data", (chunk) => { stderr += chunk; });
+
+  const exitCode = await Promise.race([
+    new Promise((resolve) => child.once("exit", resolve)),
+    delay(5000).then(() => null),
+  ]);
+  if (exitCode === null) {
+    child.kill("SIGKILL");
+    assert.fail("API did not reject the invalid port.");
+  }
+  assert.equal(exitCode, 1);
+  assert.match(stderr, /PORT must be a valid integer between 1 and 65535/);
+});
