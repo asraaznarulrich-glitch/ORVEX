@@ -20,11 +20,11 @@ Phase 1 establishes a reliable application scaffold before database and business
 - [x] Backend TypeScript check and production build pass in GitHub Actions.
 - [x] API runtime smoke test verifies health and module catalogue endpoints.
 - [x] API startup tests reject missing production CORS origins, malformed CORS origins and invalid ports.
-- [x] Latest checked workflow run #23 completed successfully for both frontend and backend (frontend runtime smoke test and four API smoke tests included).
+- [x] Latest checked workflow run #25 completed successfully for both frontend and backend. The lockfile workflow also completed successfully, including clean `npm ci` installs, builds, typechecks and smoke tests.
 - A green CI run does not replace external production deployment checks, security review or end-to-end tests against real services.
 
 ## Remaining before Phase 1 can be signed off
-- [ ] Generate and commit reproducible npm lockfiles for both applications, then switch CI and deployment installs to `npm ci`.
+- [x] Generate and commit reproducible npm lockfiles for both applications; CI and deployment install commands use `npm ci`.
 - [ ] Review the deployment configuration against the actual Netlify and Render service settings once those services are created.
 - [ ] Complete a live deployment smoke test after hosting, domains and environment variables are configured.
 
