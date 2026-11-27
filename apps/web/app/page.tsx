@@ -17,7 +17,6 @@ const modules = [
 ];
 export default function HomePage() {
   const [active, setActive] = useState("overview");
-  const [language, setLanguage] = useState("FR");
   const [notice, setNotice] = useState("Bienvenue dans l'aperçu de votre espace ORVEX.");
   const title = active === "overview" ? "Vue d'ensemble" : [...nav.flatMap(g => g.items), ...modules.map(m => ({id:m[0],label:m[1]}))].find(x => x.id === active)?.label ?? "Espace ORVEX";
   return <main className="app-shell">
@@ -28,9 +27,9 @@ export default function HomePage() {
       <div className="sidebar-bottom"><div className="plan-card"><span className="plan-label">VOTRE FORMULE</span><strong>Découverte</strong><p>Explorez les possibilités d'ORVEX.</p><button onClick={() => setNotice("Les offres et quotas seront configurés lors de la mise en place de la facturation.")}>Voir les offres ↗</button></div><div className="profile"><span className="profile-avatar">U</span><span>Utilisateur ORVEX<small>Compte de démonstration</small></span><b>•••</b></div></div>
     </aside>
     <section className="main-area">
-      <header className="topbar"><div className="breadcrumb">ORVEX <span>/</span> {title}</div><div className="top-actions"><span className="demo-pill"><i/> MODE DÉMO</span><button className="icon-button" aria-label="Notifications" onClick={() => setNotice("Vous n'avez aucune notification pour le moment.")}>♧</button><button className="language-button" onClick={() => setLanguage(language === "FR" ? "EN" : "FR")}>{language}⌄</button></div></header>
+      <header className="topbar"><div className="breadcrumb">ORVEX <span>/</span> {title}</div><div className="top-actions"><span className="demo-pill"><i/> MODE DÉMO</span><button className="icon-button" aria-label="Notifications" onClick={() => setNotice("Vous n'avez aucune notification pour le moment.")}>♧</button><button className="language-button" onClick={() => setNotice("La version anglaise sera disponible dans une prochaine mise à jour. L’interface est actuellement en français.")}>FR⌄</button></div></header>
       <div className="content">
-        <div className="welcome-row"><div><p className="eyebrow">VENDREDI 27 NOVEMBRE 2026</p><h1>{active === "overview" ? "Bonjour et bienvenue." : title}</h1><p className="subheading">{active === "overview" ? "Voici un aperçu de votre activité et de vos outils." : "Cet espace est en préparation. Les fonctionnalités seront activées progressivement."}</p></div><button className="primary-action" onClick={() => setNotice("Les actions de création seront disponibles avec les premiers modules connectés.")}>＋ <span>Nouvelle action</span></button></div>
+        <div className="welcome-row"><div><p className="eyebrow">VOTRE ESPACE DE TRAVAIL</p><h1>{active === "overview" ? "Bonjour et bienvenue." : title}</h1><p className="subheading">{active === "overview" ? "Voici un aperçu de votre activité et de vos outils." : "Cet espace est en préparation. Les fonctionnalités seront activées progressivement."}</p></div><button className="primary-action" onClick={() => setNotice("Les actions de création seront disponibles avec les premiers modules connectés.")}>＋ <span>Nouvelle action</span></button></div>
         <div className="notice">{notice}<button onClick={() => setNotice("")}>×</button></div>
         {active === "overview" ? <>
           <div className="stats-grid"><article className="stat-card"><span>CHIFFRE D'AFFAIRES</span><strong>—</strong><small>En attente de connexion des paiements</small></article><article className="stat-card"><span>CLIENTS</span><strong>—</strong><small>Votre portefeuille apparaîtra ici</small></article><article className="stat-card"><span>PROSPECTS</span><strong>—</strong><small>Suivez vos opportunités à venir</small></article><article className="stat-card"><span>FORMATIONS ACTIVES</span><strong>—</strong><small>Gérez vos contenus pédagogiques</small></article></div>
