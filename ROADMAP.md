@@ -2,16 +2,19 @@
 
 This roadmap describes intended work, not completed features. Priorities may change after validation.
 
-## Phase 0 — Foundation
+## Phase 0 — Foundation and repository
 - [x] Confirm ORVEX name and independent premium positioning.
 - [x] Confirm French/English official communication.
 - [x] Decide separate frontend/backend hosting.
-- [x] Establish application scaffold and engineering conventions.
+- [x] Establish root-level `frontend/` and `backend/` applications.
+- [x] Add CI checks, lockfiles and automated smoke tests.
 - [ ] Configure independent Netlify and Render deployments.
-- [ ] Provision PostgreSQL and secure environment variables.
-- [x] Add CI checks and basic automated tests (typecheck, production builds and runtime smoke tests).
+- [ ] Provision managed PostgreSQL and secure environment variables.
 
 ## Phase 1 — Secure platform core
+- [ ] Finalize data model and multi-tenant security design.
+- [ ] Provision PostgreSQL and configure private database access.
+- [ ] Add Prisma schema, migrations and safe migration workflow.
 - [ ] Authentication, email verification and password reset.
 - [ ] Organizations, workspaces, memberships and roles.
 - [ ] Tenant isolation and server-side authorization.
