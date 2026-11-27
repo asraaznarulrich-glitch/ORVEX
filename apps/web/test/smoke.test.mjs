@@ -20,7 +20,7 @@ async function getFreePort() {
 
 test("production frontend serves the ORVEX workspace", async () => {
   const port = await getFreePort();
-  const child = spawn("npm", ["run", "start", "--", "--hostname", "127.0.0.1", "--port", String(port)], {
+  const child = spawn(process.execPath, [new URL("../node_modules/next/dist/bin/next", import.meta.url).pathname, "start", "--hostname", "127.0.0.1", "--port", String(port)], {
     cwd: webDirectory,
     env: { ...process.env, NODE_ENV: "production" },
     stdio: ["ignore", "pipe", "pipe"],
