@@ -17,7 +17,8 @@ ORVEX is an independent, bilingual (French/English), modular business platform d
 apps/
   web/   # Next.js frontend — deploy independently to Netlify
   api/   # NestJS backend API — deploy independently to Render
-docs/    # Product, brand, architecture and deployment decisions
+.github/
+  workflows/ # Automated frontend and backend quality checks
 ```
 
 ## Hosting model
@@ -33,6 +34,8 @@ The frontend calls the backend through a public HTTPS API URL configured with `N
 Customer management, payments, payment reminders, digital product delivery, lead tracking, dashboard, learning management, events, quizzes and certificates, AI learning assistant, post-training follow-up, AI business audit, quotes and proposals, private workspaces, demo builder, AI knowledge base, editorial assistant, email/WhatsApp assistant, guide studio and video workspace.
 
 ## Development status
-This repository is the initial project scaffold. Hosting services, database, authentication, payments and production deployments are **not yet configured**.
+The initial frontend and backend scaffold is in place. Automated TypeScript checks and production builds have passed in GitHub Actions. The dashboard is still a demonstration interface; the API currently exposes a health endpoint and a small planned-module catalogue.
+
+Hosting services, database, authentication, payments and production deployments are **not yet configured**.
 
 See [ROADMAP.md](ROADMAP.md), [ARCHITECTURE.md](ARCHITECTURE.md), [DEPLOYMENT.md](DEPLOYMENT.md) and [BRAND.md](BRAND.md).
