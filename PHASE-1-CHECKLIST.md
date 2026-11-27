@@ -11,20 +11,22 @@ Phase 1 establishes a reliable application scaffold before database and business
 - [x] Startup validation for CORS origins and the API port.
 - [x] Graceful shutdown hooks enabled.
 - [x] Safe environment examples for frontend and backend.
-- [x] GitHub Actions workflow for frontend and backend typechecks and production builds.
+- [x] GitHub Actions workflow for frontend and backend typechecks, production builds and smoke tests.
 - [x] Deployment instructions for separate Netlify and Render services.
 
 ## Verification
-- GitHub Actions has reported successful frontend and backend typechecks and builds on the previously checked commits.
-- Every new code or dependency change must pass the same workflow before it is considered verified.
-- A green build does not replace runtime, integration, security, or end-to-end tests.
+- [x] Frontend TypeScript check and production build pass in GitHub Actions.
+- [x] Frontend production server starts and serves the ORVEX workspace (runtime smoke test).
+- [x] Backend TypeScript check and production build pass in GitHub Actions.
+- [x] API runtime smoke test verifies health and module catalogue endpoints.
+- [x] API startup tests reject missing production CORS origins, malformed CORS origins and invalid ports.
+- [x] Latest checked workflow run #22 completed successfully for both frontend and backend.
+- A green CI run does not replace external production deployment checks, security review or end-to-end tests against real services.
 
 ## Remaining before Phase 1 can be signed off
-- [ ] Confirm the latest workflow run is green after the most recent API startup changes.
-- [ ] Add and commit reproducible npm lockfiles, then switch CI from `npm install` to `npm ci`.
-- [ ] Add automated API smoke tests for health and startup configuration.
-- [ ] Perform a real runtime smoke test of the frontend and API.
-- [ ] Review the final environment and deployment configuration.
+- [ ] Generate and commit reproducible npm lockfiles for both applications, then switch CI and deployment installs to `npm ci`.
+- [ ] Review the deployment configuration against the actual Netlify and Render service settings once those services are created.
+- [ ] Complete a live deployment smoke test after hosting, domains and environment variables are configured.
 
 ## Explicitly out of scope for Phase 1
 PostgreSQL provisioning, Prisma schema and migrations, authentication, tenant data, payment processing and the 20 business modules belong to later phases. None should be represented as operational until implemented and tested.
