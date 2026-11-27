@@ -20,7 +20,7 @@ Phase 1 establishes a reliable application scaffold before database and business
 - [x] Backend TypeScript check and production build pass in GitHub Actions.
 - [x] API runtime smoke test verifies health and module catalogue endpoints.
 - [x] API startup tests reject missing production CORS origins, malformed CORS origins and invalid ports.
-- [x] Latest checked workflow run #22 completed successfully for both frontend and backend.
+- [x] Latest checked workflow run #23 completed successfully for both frontend and backend (frontend runtime smoke test and four API smoke tests included).
 - A green CI run does not replace external production deployment checks, security review or end-to-end tests against real services.
 
 ## Remaining before Phase 1 can be signed off
