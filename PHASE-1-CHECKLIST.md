@@ -1,6 +1,6 @@
-# ORVEX — Phase 1 completion checklist
+# ORVEX — Phase 0 foundation checklist
 
-Phase 1 establishes a reliable application scaffold before database and business features are introduced.
+Phase 0 establishes a reliable application scaffold before database and business features are introduced.
 
 ## Implemented
 - [x] Separate root-level `frontend/` (Next.js) and `backend/` (NestJS API) applications.
@@ -11,23 +11,21 @@ Phase 1 establishes a reliable application scaffold before database and business
 - [x] Startup validation for CORS origins and the API port.
 - [x] Graceful shutdown hooks enabled.
 - [x] Safe environment examples for frontend and backend.
-- [x] GitHub Actions workflow for frontend and backend typechecks, production builds and smoke tests.
+- [x] GitHub Actions workflows for frontend and backend typechecks, production builds and smoke tests.
+- [x] Reproducible npm lockfiles and clean `npm ci` installs.
 - [x] Deployment instructions for separate Netlify and Render services.
 
 ## Verification
-- [x] Frontend TypeScript check and production build pass in GitHub Actions.
-- [x] Frontend production server starts and serves the ORVEX workspace (runtime smoke test).
-- [x] Backend TypeScript check and production build pass in GitHub Actions.
-- [x] API runtime smoke test verifies health and module catalogue endpoints.
+- [x] Frontend TypeScript check, production build and runtime smoke test pass in GitHub Actions.
+- [x] Backend TypeScript check, production build and API smoke tests pass in GitHub Actions.
 - [x] API startup tests reject missing production CORS origins, malformed CORS origins and invalid ports.
-- [x] Latest quality workflow run #29 completed successfully: frontend and backend both passed `npm ci`, typecheck, production build and smoke tests.
-- [x] Lockfile workflow completed successfully, including clean installs, builds, typechecks and smoke tests for both applications.
+- [x] Quality workflow run #30 passed on the root-level `backend/` and `frontend/` structure.
+- [x] Lockfile workflow run #2 passed on the same commit.
 - A green CI run does not replace external production deployment checks, security review or end-to-end tests against real services.
 
-## Remaining before Phase 1 can be signed off
-- [x] Generate and commit reproducible npm lockfiles for both applications; CI and deployment install commands use `npm ci`.
-- [ ] Review the deployment configuration against the actual Netlify and Render service settings once those services are created.
+## Remaining before Phase 0 can be signed off
+- [ ] Review deployment configuration against actual Netlify and Render service settings once created.
 - [ ] Complete a live deployment smoke test after hosting, domains and environment variables are configured.
 
-## Explicitly out of scope for Phase 1
-PostgreSQL provisioning, Prisma schema and migrations, authentication, tenant data, payment processing and the 20 business modules belong to later phases. None should be represented as operational until implemented and tested.
+## Next phase
+Phase 1 covers PostgreSQL, Prisma, authentication, organizations, roles and tenant isolation. These are not implemented yet. Do not treat the API or dashboard as production-ready or as supporting real user data.
