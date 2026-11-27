@@ -14,9 +14,8 @@ ORVEX is an independent, bilingual (French/English), modular business platform d
 
 ## Repository layout
 ```
-apps/
-  web/   # Next.js frontend — deploy independently to Netlify
-  api/   # NestJS backend API — deploy independently to Render
+backend/    # NestJS API — deploy independently to Render
+frontend/  # Next.js app — deploy independently to Netlify
 .github/
   workflows/ # Automated frontend and backend quality checks
 ```
@@ -24,8 +23,8 @@ apps/
 ## Hosting model
 | Component | Platform | Root directory |
 |---|---|---|
-| Frontend | Netlify | `apps/web` |
-| Backend API | Render | `apps/api` |
+| Frontend | Netlify | `frontend` |
+| Backend API | Render | `backend` |
 | Database | Managed PostgreSQL | Separate managed database |
 
 The frontend calls the backend through a public HTTPS API URL configured with `NEXT_PUBLIC_API_URL`. Secrets and database credentials belong only in the backend environment.
@@ -34,7 +33,7 @@ The frontend calls the backend through a public HTTPS API URL configured with `N
 Customer management, payments, payment reminders, digital product delivery, lead tracking, dashboard, learning management, events, quizzes and certificates, AI learning assistant, post-training follow-up, AI business audit, quotes and proposals, private workspaces, demo builder, AI knowledge base, editorial assistant, email/WhatsApp assistant, guide studio and video workspace.
 
 ## Development status
-The initial frontend and backend scaffold is in place. Automated TypeScript checks and production builds have passed in GitHub Actions. The dashboard is still a demonstration interface; the API currently exposes a health endpoint and a small planned-module catalogue.
+The initial frontend and backend scaffold is in place. Automated TypeScript checks, production builds and runtime smoke tests have passed in GitHub Actions. The dashboard is still a demonstration interface; the API currently exposes a health endpoint and a small planned-module catalogue.
 
 Hosting services, database, authentication, payments and production deployments are **not yet configured**.
 

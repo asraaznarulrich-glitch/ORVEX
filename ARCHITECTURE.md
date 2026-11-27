@@ -2,8 +2,8 @@
 
 ## Deployment boundary
 One GitHub repository, two independently deployed applications:
-- `apps/web`: Next.js + TypeScript frontend, deployed on Netlify.
-- `apps/api`: NestJS + TypeScript REST API, deployed on Render.
+- `frontend/`: Next.js + TypeScript frontend, deployed on Netlify.
+- `backend/`: NestJS + TypeScript REST API, deployed on Render.
 - PostgreSQL: managed database, accessed only by the API.
 
 The frontend must never connect directly to PostgreSQL or contain private server credentials.

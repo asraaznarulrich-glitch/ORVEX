@@ -3,7 +3,7 @@
 Phase 1 establishes a reliable application scaffold before database and business features are introduced.
 
 ## Implemented
-- [x] Separate Next.js frontend and NestJS API applications.
+- [x] Separate root-level `frontend/` (Next.js) and `backend/` (NestJS API) applications.
 - [x] TypeScript strict checks configured for both applications.
 - [x] Versioned API prefix: `/api/v1`.
 - [x] Global request validation configured in the API.
@@ -20,7 +20,8 @@ Phase 1 establishes a reliable application scaffold before database and business
 - [x] Backend TypeScript check and production build pass in GitHub Actions.
 - [x] API runtime smoke test verifies health and module catalogue endpoints.
 - [x] API startup tests reject missing production CORS origins, malformed CORS origins and invalid ports.
-- [x] Latest checked workflow run #25 completed successfully for both frontend and backend. The lockfile workflow also completed successfully, including clean `npm ci` installs, builds, typechecks and smoke tests.
+- [x] Latest quality workflow run #29 completed successfully: frontend and backend both passed `npm ci`, typecheck, production build and smoke tests.
+- [x] Lockfile workflow completed successfully, including clean installs, builds, typechecks and smoke tests for both applications.
 - A green CI run does not replace external production deployment checks, security review or end-to-end tests against real services.
 
 ## Remaining before Phase 1 can be signed off

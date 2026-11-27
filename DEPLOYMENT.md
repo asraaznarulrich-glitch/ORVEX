@@ -1,24 +1,24 @@
 # ORVEX — Separate deployment guide
 
-The frontend and backend are intentionally hosted separately and deployed from this repository.
+The frontend and backend are maintained in separate root folders and hosted independently.
 
 ## 1. Frontend — Netlify
 - Connect the ORVEX GitHub repository.
-- Base directory: `apps/web`.
+- Base directory: `frontend`.
 - Build command: `npm run build`.
 - Configure the Next.js runtime/adapter supported by the selected Netlify setup; do not publish the raw source directory as a static site.
 - Environment variable: `NEXT_PUBLIC_API_URL` = public HTTPS API base URL, ending in `/api/v1`.
-- Local example: copy `apps/web/.env.example` to `apps/web/.env.local`.
+- Local example: copy `frontend/.env.example` to `frontend/.env.local`.
 
 ## 2. Backend — Render
 - Create a separate Web Service from the same GitHub repository.
-- Root directory: `apps/api`.
+- Root directory: `backend`.
 - Runtime: Node.js 22.
 - Build command: `npm ci && npm run build`.
 - Start command: `npm run start:prod`.
 - Set `NODE_ENV=production` and use the `PORT` assigned by Render.
 - Set `CORS_ORIGINS` to the exact frontend origin(s), comma-separated, without paths.
-- Local example: copy `apps/api/.env.example` to `apps/api/.env`.
+- Local example: copy `backend/.env.example` to `backend/.env`.
 
 ## 3. Database
 Provision managed PostgreSQL separately. Store its connection string only in Render as the private `DATABASE_URL` environment variable. Never commit real credentials or copy them into frontend variables. Apply schema migrations through a controlled deployment/release process.
