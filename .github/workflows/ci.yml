@@ -25,7 +25,6 @@ jobs:
       - run: npm install
       - run: npm run typecheck
       - run: npm run build
-      - run: npm test
 
   backend:
     name: Backend build and typecheck
@@ -41,3 +40,4 @@ jobs:
       - run: npm install
       - run: npm run typecheck
       - run: npm run build
+      - run: npm test
