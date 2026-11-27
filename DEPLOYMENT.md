@@ -14,7 +14,7 @@ The frontend and backend are intentionally hosted separately and deployed from t
 - Create a separate Web Service from the same GitHub repository.
 - Root directory: `apps/api`.
 - Runtime: Node.js 22.
-- Build command: `npm install && npm run build`.
+- Build command: `npm ci && npm run build`.
 - Start command: `npm run start:prod`.
 - Set `NODE_ENV=production` and use the `PORT` assigned by Render.
 - Set `CORS_ORIGINS` to the exact frontend origin(s), comma-separated, without paths.
