@@ -6,10 +6,10 @@ This roadmap describes intended work, not completed features. Priorities may cha
 - [x] Confirm ORVEX name and independent premium positioning.
 - [x] Confirm French/English official communication.
 - [x] Decide separate frontend/backend hosting.
-- [ ] Establish application scaffold and engineering conventions.
+- [x] Establish application scaffold and engineering conventions.
 - [ ] Configure independent Netlify and Render deployments.
 - [ ] Provision PostgreSQL and secure environment variables.
-- [ ] Add CI checks and basic automated tests.
+- [x] Add CI checks and basic automated tests (typecheck, production builds and runtime smoke tests).
 
 ## Phase 1 — Secure platform core
 - [ ] Authentication, email verification and password reset.
