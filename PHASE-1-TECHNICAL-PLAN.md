@@ -1,6 +1,6 @@
 # ORVEX — Phase 1 technical plan
 
-**Status:** In progress. The database schema and first authorization building block are in the repository; production dependency audits and CI pass. Authentication, enforced tenant isolation and migrations remain incomplete.
+**Status:** In progress. The database schema, Supabase JWT authentication guard and first organization authorization building block are in the repository; production dependency audits and CI pass. Profile synchronization, enforced tenant isolation and production migration remain incomplete.
 
 ## 1. Database and hosting
 - Managed PostgreSQL via the existing Supabase project.
@@ -13,14 +13,13 @@
 
 ## 2. Initial relational model
 The current Prisma schema contains:
-- `User`: email, normalized unique email, optional password hash, status and timestamps.
+- `User`: Supabase Auth UUID, email, normalized unique email, profile status and timestamps; no local password hash.
 - `Organization`: tenant workspace, name, unique slug and timestamps.
 - `Membership`: user-to-organization relation, role and timestamps; unique user/organization pair.
 - `Invitation`: organization invitation with hashed token, expiry and revocation/acceptance timestamps.
-- `Session`: hashed session token, expiry and revocation timestamp.
-- `AuditEvent`: optional organization and actor references, action, target metadata and timestamp.
+- `AuditEvent`: optional organization and actor references, action, target metadata and timestamp. Supabase Auth owns passwords and authentication sessions; there is no duplicate ORVEX session table.
 
-The schema is a first foundation and must be reviewed before its first migration is applied to Supabase. Production dependency overrides currently resolve PostCSS to 8.5.34 and Effect to 3.22.5; `npm audit --omit=dev` passes for both applications.
+The schema is a first foundation and must be reviewed before its first migration is applied to Supabase. Production dependency overrides are locked to patched PostCSS and Effect versions; `npm audit --omit=dev` passes for both applications.
 
 ## 3. Tenant isolation — non-negotiable
 - Every tenant-owned record must carry an `organizationId`.
@@ -39,7 +38,7 @@ The schema is a first foundation and must be reviewed before its first migration
 - Let the Supabase client manage its supported browser session lifecycle; select the SSR/cookie integration before production and apply CSRF protections to cookie-authenticated state changes.
 - Rotate and revoke sessions on password change, logout and security events.
 - Rate-limit login, registration, verification and password-reset endpoints; avoid account-enumeration responses.
-- The backend now verifies access-token signatures through the Supabase JWKS endpoint (ES256/RS256), and checks issuer, audience, expiry, issued-at, subject and role. A global default-deny guard protects routes unless explicitly marked public.
+- The backend now verifies access-token signatures through the Supabase JWKS endpoint (ES256/RS256/EdDSA), and checks issuer, audience, expiry, issued-at, subject and role. A global default-deny guard protects routes unless explicitly marked public.
 - Configure `SUPABASE_URL` in Render and confirm an asymmetric ES256/RS256 signing key is active. The backend intentionally does not accept legacy HS256 tokens through JWKS.
 - Add tests for session expiry/revocation, brute-force throttling and unauthorized access.
 
