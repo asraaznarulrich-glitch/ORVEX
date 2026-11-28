@@ -30,19 +30,24 @@
 
 ### Implemented in the repository
 - [x] Prisma ORM 7 and PostgreSQL driver adapter added to the backend.
+- [x] User profile IDs mirror Supabase Auth user UUIDs; local password hashes and duplicate session storage were removed from the schema.
 - [x] Initial relational schema drafted for User, Organization, Membership, Invitation, Session and AuditEvent.
 - [x] Prisma client generation integrated into backend typecheck and build.
 - [x] Prisma service manages database connection lifecycle; production startup requires `DATABASE_URL`.
 - [x] Organization membership authorization service checks the user-and-organization composite key.
 - [x] Organization role authorization supports OWNER, ADMIN and MEMBER roles.
 - [x] Unit-level authorization tests added for tenant membership lookup and role enforcement.
+- [x] Backend verifies Supabase JWTs against the project's public JWKS using ES256/RS256, with issuer, audience, expiry, issued-at, subject and role checks.
+- [x] Global default-deny authentication guard added; only health and static module-catalogue routes are explicitly public.
+- [x] Verified user context decorator and unit tests for bearer parsing, public bypass, missing credentials and verified identity attachment.
 
 ### Not yet implemented or verified
 - [x] Confirm GitHub Actions verifies organization authorization tests, builds and production dependency audits.
 - [x] Generate and review the initial Prisma SQL migration from the Prisma 7 schema; the SQL and PostgreSQL migration lock are committed.
 - [ ] Apply the reviewed migration to the Supabase project only after a separate confirmation.
-- [ ] Implement authentication, secure sessions, email verification and password reset.
-- [ ] Add authenticated request context and enforce organization checks on every tenant-owned route.
+- [ ] Connect the frontend to Supabase Auth for sign-up, sign-in, sign-out, session refresh, email verification and password reset.
+- [ ] Confirm Supabase is issuing ES256 or RS256 access tokens and configure `SUPABASE_URL` privately in Render.
+- [ ] Synchronize verified Supabase Auth users into the ORVEX `User` profile table and enforce organization checks on every tenant-owned route.
 - [ ] Add PostgreSQL Row-Level Security as defense in depth, with safe transaction-scoped tenant context.
 - [ ] Add integration tests proving organization A cannot read or mutate organization B data.
 - [ ] Add rate limiting, CSRF protection where cookie sessions are used, and security audit coverage.
