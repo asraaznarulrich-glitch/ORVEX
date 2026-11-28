@@ -64,6 +64,11 @@ test("API starts and exposes health and module catalogue endpoints", async () =>
     assert.equal(modules.total, 6);
     assert.equal(modules.items.length, 6);
     assert.ok(modules.items.every((item) => item.status === "planned"));
+
+    const protectedResponse = await fetch(
+      `http://127.0.0.1:${port}/api/v1/organizations/00000000-0000-4000-8000-000000000001/access`,
+    );
+    assert.equal(protectedResponse.status, 401);
   } catch (error) {
     throw new Error(`${error instanceof Error ? error.message : String(error)}\n${stderr}`);
   } finally {
