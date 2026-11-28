@@ -1,4 +1,4 @@
-name: Generate and verify npm lockfiles
+name: ORVEX dependency verification
 
 on:
   push:
@@ -6,71 +6,54 @@ on:
     paths:
       - ".github/workflows/generate-lockfiles.yml"
       - "backend/package.json"
+      - "backend/package-lock.json"
       - "backend/prisma/schema.prisma"
       - "frontend/package.json"
+      - "frontend/package-lock.json"
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: orvex-lockfiles-main
-  cancel-in-progress: false
+  group: orvex-dependency-verification
+  cancel-in-progress: true
 
 jobs:
-  lockfiles:
-    name: Generate and verify npm lockfiles
+  dependencies:
+    name: Verify locked dependencies and database schema
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          persist-credentials: true
-      - uses: actions/setup-node@v4
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
 
-      - name: Generate frontend lockfile
-        working-directory: frontend
-        run: npm install --package-lock-only --no-audit --no-fund
-
-      - name: Generate backend lockfile
-        working-directory: backend
-        run: npm install --package-lock-only --no-audit --no-fund
-
-      - name: Verify frontend clean install and checks
+      - name: Verify frontend lockfile and dependencies
         working-directory: frontend
         run: |
           npm ci
+          npm audit
           npm run typecheck
           npm run build
           npm test
 
-      - name: Verify backend clean install and checks
+      - name: Verify backend lockfile and dependencies
         working-directory: backend
         run: |
           npm ci
+          npm audit
           npm run typecheck
           npm run build
           npm test
 
-      - name: Generate initial PostgreSQL migration without connecting to Supabase
+      - name: Verify Prisma schema and migration
         working-directory: backend
         run: |
-          if [ ! -f prisma/migrations/20261128000000_initial/migration.sql ]; then
-            mkdir -p prisma/migrations/20261128000000_initial
-            npx prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > prisma/migrations/20261128000000_initial/migration.sql
-            printf 'provider = "postgresql"\n' > prisma/migrations/migration_lock.toml
-          fi
-
-      - name: Commit verified lockfiles
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add frontend/package-lock.json backend/package-lock.json backend/prisma/migrations
-          if git diff --cached --quiet; then
-            echo "Lockfiles are already up to date."
-          else
-            git commit -m "Update verified npm lockfiles"
-            git pull --rebase origin main
-            git push
-          fi
+          npx prisma validate
+          test -s prisma/migrations/20261128000000_initial/migration.sql
+          test -s prisma/migrations/migration_lock.toml
