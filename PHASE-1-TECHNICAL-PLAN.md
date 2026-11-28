@@ -33,14 +33,15 @@ The schema is a first foundation and must be reviewed before its first migration
 - Add PostgreSQL Row-Level Security as defense in depth, using transaction-scoped tenant context; never rely on a session-level setting that can leak across pooled connections.
 
 ## 4. Authentication baseline
-- Decide whether ORVEX owns password authentication or delegates identity to a trusted provider before implementing login.
-- If passwords are stored, use Argon2id (or an equivalently strong maintained password hashing implementation); never encrypt or store plaintext passwords.
-- Require verified email before sensitive account actions.
+- Supabase Auth is the selected identity provider. ORVEX does not store passwords or duplicate Supabase sessions; the profile `User.id` mirrors the UUID from `auth.users`.
+- Configure Supabase Auth to require verified email before sensitive account actions; complete frontend signup, confirmation and password-reset flows.
 - Password reset and invitation tokens must be random, single-use, stored hashed and expire.
-- Prefer secure, HttpOnly, SameSite cookies for browser sessions; set Secure in production and define CSRF protections for cookie-authenticated state changes.
+- Let the Supabase client manage its supported browser session lifecycle; select the SSR/cookie integration before production and apply CSRF protections to cookie-authenticated state changes.
 - Rotate and revoke sessions on password change, logout and security events.
 - Rate-limit login, registration, verification and password-reset endpoints; avoid account-enumeration responses.
-- Add tests for expiry, replay, revocation, brute-force throttling and unauthorized access.
+- The backend now verifies access-token signatures through the Supabase JWKS endpoint (ES256/RS256), and checks issuer, audience, expiry, issued-at, subject and role. A global default-deny guard protects routes unless explicitly marked public.
+- Configure `SUPABASE_URL` in Render and confirm an asymmetric ES256/RS256 signing key is active. The backend intentionally does not accept legacy HS256 tokens through JWKS.
+- Add tests for session expiry/revocation, brute-force throttling and unauthorized access.
 
 ## 5. Roles and permissions
 Initial organization roles: `OWNER`, `ADMIN`, `MEMBER`. Define explicit permission checks per action. A platform-level role (if introduced) must remain distinct from organization roles. Never rely on frontend role flags.
@@ -50,8 +51,8 @@ Initial organization roles: `OWNER`, `ADMIN`, `MEMBER`. Define explicit permissi
 2. Generate and review the initial SQL migration without connecting to or modifying the production database — generated and committed in `backend/prisma/migrations/20261128000000_initial/`; not applied to Supabase.
 3. Add a readiness check that reports database availability without exposing credentials or internal error details.
 4. Apply the reviewed migration to Supabase only after explicit owner approval and private credential configuration.
-5. Choose and implement the authentication provider and secure session lifecycle.
-6. Add authenticated request context and organization membership/role guards.
+5. Connect the frontend to Supabase Auth and configure email confirmation, password reset and session refresh.
+6. Synchronize verified Supabase identities into the ORVEX profile table; add authenticated request context and organization membership/role guards.
 7. Implement transaction-safe tenant context and PostgreSQL RLS policies.
 8. Add cross-tenant integration tests and security tests.
 9. Only then start customer, payment and other business modules.
