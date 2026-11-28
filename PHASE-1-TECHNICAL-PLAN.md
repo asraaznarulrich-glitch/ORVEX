@@ -47,7 +47,7 @@ Initial organization roles: `OWNER`, `ADMIN`, `MEMBER`. Define explicit permissi
 
 ## 6. Implementation sequence
 1. Prisma 7, PostgreSQL adapter and initial schema — integrated; CI build, tests and production dependency audits pass (workflow #52).
-2. Generate and review the initial SQL migration without connecting to or modifying the production database.
+2. Generate and review the initial SQL migration without connecting to or modifying the production database — generated and committed in `backend/prisma/migrations/20261128000000_initial/`; not applied to Supabase.
 3. Add a readiness check that reports database availability without exposing credentials or internal error details.
 4. Apply the reviewed migration to Supabase only after explicit owner approval and private credential configuration.
 5. Choose and implement the authentication provider and secure session lifecycle.
