@@ -18,7 +18,7 @@ function createContext({ authorization, isPublic = false } = {}) {
 }
 
 test("bearer token parser accepts a single well-formed bearer credential", () => {
-  assert.equal(extractBearerToken("Bearer abc.def_123-~"), "abc.def_123-~");
+  assert.equal(extractBearerToken("Bearer abc.def_123-signature"), "abc.def_123-signature");
   assert.equal(extractBearerToken("bearer header.payload.signature"), "header.payload.signature");
 });
 
