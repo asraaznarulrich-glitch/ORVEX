@@ -19,13 +19,16 @@ function createContext({ authorization, isPublic = false } = {}) {
 
 test("bearer token parser accepts a single well-formed bearer credential", () => {
   assert.equal(extractBearerToken("Bearer abc.def_123-~"), "abc.def_123-~");
-  assert.equal(extractBearerToken("bearer token"), "token");
+  assert.equal(extractBearerToken("bearer header.payload.signature"), "header.payload.signature");
 });
 
 test("bearer token parser rejects missing, malformed and ambiguous credentials", () => {
   assert.equal(extractBearerToken(undefined), null);
   assert.equal(extractBearerToken("Basic abc"), null);
   assert.equal(extractBearerToken("Bearer token extra"), null);
+  assert.equal(extractBearerToken("Bearer token"), null);
+  assert.equal(extractBearerToken("Bearer header.payload."), null);
+  assert.equal(extractBearerToken(`Bearer ${"a".repeat(8193)}.payload.signature`), null);
   assert.equal(extractBearerToken("Bearer "), null);
 });
 
