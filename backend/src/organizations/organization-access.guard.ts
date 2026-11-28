@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
   ForbiddenException,
@@ -8,6 +9,8 @@ import {
 import { Reflector } from "@nestjs/core";
 import { OrganizationAccessService, type OrganizationRole } from "./organization-access.service.js";
 import { ORGANIZATION_ROLES_KEY } from "./organization-roles.decorator.js";
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 interface OrganizationRequest {
   params: { organizationId?: string };
@@ -31,6 +34,9 @@ export class OrganizationAccessGuard implements CanActivate {
     }
     if (!organizationId) {
       throw new ForbiddenException("An organization context is required.");
+    }
+    if (!UUID_PATTERN.test(organizationId)) {
+      throw new BadRequestException("A valid organization UUID is required.");
     }
 
     const roles = this.reflector.getAllAndOverride<OrganizationRole[]>(
