@@ -52,7 +52,7 @@ export class SupabaseJwtService implements OnModuleInit {
       const { payload } = await jwtVerify(token, this.jwks, {
         issuer: this.issuer,
         audience: "authenticated",
-        algorithms: ["ES256", "RS256", "EdDSA"],
+        algorithms: ["ES256", "RS256"],
         requiredClaims: ["exp", "iat", "sub", "role"],
       });
 
