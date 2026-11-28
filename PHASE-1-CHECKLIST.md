@@ -21,7 +21,7 @@
 - [x] Frontend TypeScript check, production build and runtime smoke test passed in GitHub Actions.
 - [x] Backend TypeScript check, production build and API smoke tests passed in GitHub Actions.
 - [x] API startup tests reject missing production CORS origins, malformed CORS origins and invalid ports.
-- [x] Latest quality workflow #75 passed on commit `063297b6` (frontend and backend).
+- [x] Latest quality workflow #90 passed on commit `388d1a28` (frontend and backend, including authentication, organization guard, rate limiting and Helmet).
 - [x] Lockfile workflow #10 passed; the initial migration was generated without connecting to Supabase.
 - [ ] Review actual Netlify and Render configuration after services are created.
 - [ ] Complete live deployment smoke tests.
@@ -53,6 +53,8 @@
 - [ ] Add organization-scoped services and apply the guard to every future tenant-owned route.
 - [ ] Add PostgreSQL Row-Level Security as defense in depth, with safe transaction-scoped tenant context.
 - [ ] Add integration tests proving organization A cannot read or mutate organization B data.
-- [ ] Add rate limiting, CSRF protection where cookie sessions are used, and security audit coverage.
+- [x] Add baseline global API rate limiting and Helmet response security headers.
+- [ ] Add endpoint-specific limits for authentication flows and CSRF protection if cookie-based state-changing requests are introduced.
+- [ ] Add security audit coverage and cross-tenant integration tests.
 
 A green CI run does not mean that authentication, tenant isolation or production security is complete. Do not use the current API for real customer data.
