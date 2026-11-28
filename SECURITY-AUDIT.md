@@ -11,7 +11,7 @@ This is an engineering review, not a penetration test or a certification.
 ## Findings addressed
 
 - The backend development dependency tree contained three moderate npm audit findings associated with vulnerable `glob` and `minimatch` versions pulled by the NestJS CLI toolchain. The backend now overrides `glob` to the patched 14.x line; the regenerated lockfile resolves `glob@14.0.6` and `minimatch@11.0.9`.
-- The API now rejects malformed, non-JWT and oversized bearer credentials (over 8 KB) before signature verification. The organization guard validates the organization UUID before making a database query.
+- The API now rejects malformed, non-JWT and oversized bearer credentials (over 8 KB) before signature verification. The organization guard validates the organization UUID before making a database query. An API smoke test also confirms that the live organization access route returns HTTP 401 without an access token.
 - Supabase JWT verification validates the signature against the project's JWKS, issuer, audience, allowed algorithms, expiry, issued-at, subject UUID and authenticated role. Tokens issued too far in the future are rejected.
 - Automated cryptographic tests use a temporary local JWKS server and generated signing keys. They verify a valid token and reject a forged signature, wrong issuer, wrong audience, expired token, future-issued token, wrong role, invalid subject and missing issued-at claim. They do not require production Supabase credentials.
 - Cross-origin credentialed requests are disabled while ORVEX uses bearer tokens and has no cookie-based session flow.
@@ -24,7 +24,7 @@ This is an engineering review, not a penetration test or a certification.
 
 The full `npm audit` runs now pass for both frontend and backend, including development dependencies. The backend findings were three moderate alerts associated with `glob` and `minimatch`; the lockfile now resolves `glob@14.0.6` and `minimatch@11.0.9`.
 
-GitHub Actions workflow #118 passed on commit `cfb7e90e`: clean installs, full dependency audits, TypeScript checks, production builds, all automated tests, Prisma schema validation and initial migration-file checks. Both frontend and backend jobs passed.
+GitHub Actions workflow #119 passed on commit `f65bb922`: clean installs, full dependency audits, TypeScript checks, production builds, all automated tests, Prisma schema validation and initial migration-file checks. Both frontend and backend jobs passed.
 
 ## Remaining risks and work
 
