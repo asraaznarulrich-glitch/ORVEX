@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { OrganizationAccessGuard } from "../dist/organizations/organization-access.guard.js";
 
-function makeContext({ userId = "user-1", organizationId = "org-1" } = {}) {
+function makeContext({ userId = "user-1", organizationId = "00000000-0000-4000-8000-000000000002" } = {}) {
   const request = {
     user: userId ? { id: userId } : undefined,
     params: organizationId ? { organizationId } : {},
@@ -22,11 +22,11 @@ test("organization guard checks membership for the authenticated user and route 
     requireRole: async (...args) => { calls.push(["role", ...args]); },
   };
   const reflector = { getAllAndOverride: () => undefined };
-  const { context } = makeContext({ userId: "user-a", organizationId: "org-a" });
+  const { context } = makeContext({ userId: "user-a", organizationId: "00000000-0000-4000-8000-000000000003" });
   const guard = new OrganizationAccessGuard(reflector, access);
 
   assert.equal(await guard.canActivate(context), true);
-  assert.deepEqual(calls, [["membership", "user-a", "org-a"]]);
+  assert.deepEqual(calls, [["membership", "user-a", "00000000-0000-4000-8000-000000000003"]]);
 });
 
 test("organization guard enforces declared roles", async () => {
@@ -40,7 +40,7 @@ test("organization guard enforces declared roles", async () => {
   const guard = new OrganizationAccessGuard(reflector, access);
 
   assert.equal(await guard.canActivate(context), true);
-  assert.deepEqual(calls, [["role", "user-1", "org-1", ["OWNER", "ADMIN"]]]);
+  assert.deepEqual(calls, [["role", "user-1", "00000000-0000-4000-8000-000000000002", ["OWNER", "ADMIN"]]]);
 });
 
 test("organization guard rejects missing authenticated user", async () => {
