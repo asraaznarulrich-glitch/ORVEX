@@ -11,9 +11,9 @@ This is an engineering review, not a penetration test or a certification.
 ## Findings addressed
 
 - The backend development dependency tree contained three moderate npm audit findings associated with vulnerable `glob` and `minimatch` versions pulled by the NestJS CLI toolchain. The backend now overrides `glob` to the patched 14.x line; the regenerated lockfile resolves `glob@14.0.6` and `minimatch@11.0.9`.
-- The API now rejects malformed, non-JWT and oversized bearer credentials before signature verification.
+- The API now rejects malformed, non-JWT and oversized bearer credentials (over 8 KB) before signature verification. The organization guard validates the organization UUID before making a database query.
 - Supabase JWT verification validates the signature against the project's JWKS, issuer, audience, allowed algorithms, expiry, issued-at, subject UUID and authenticated role. Tokens issued too far in the future are rejected.
-- Automated cryptographic tests use a temporary local JWKS server and generated signing keys; they do not require production Supabase credentials.
+- Automated cryptographic tests use a temporary local JWKS server and generated signing keys. They verify a valid token and reject a forged signature, wrong issuer, wrong audience, expired token, future-issued token, wrong role, invalid subject and missing issued-at claim. They do not require production Supabase credentials.
 - Cross-origin credentialed requests are disabled while ORVEX uses bearer tokens and has no cookie-based session flow.
 - GitHub Actions are pinned to immutable commit SHAs, use read-only repository permissions for build/audit jobs, and disable persisted checkout credentials.
 - Lockfile maintenance is isolated in a dedicated workflow. It uses `--ignore-scripts`, does not run builds or tests while the write-scoped token is present, and only commits lockfiles.
@@ -22,11 +22,9 @@ This is an engineering review, not a penetration test or a certification.
 
 ## Verification status
 
-The previous full dependency audit found:
-- Frontend: no findings in the full `npm audit` run.
-- Backend: three moderate findings in the development toolchain; the dependency override and lockfile have since been regenerated.
+The full `npm audit` runs now pass for both frontend and backend, including development dependencies. The backend findings were three moderate alerts associated with `glob` and `minimatch`; the lockfile now resolves `glob@14.0.6` and `minimatch@11.0.9`.
 
-The full audit, clean install, typecheck, build, unit tests, cryptographic JWT tests, Prisma validation and migration-file checks must all pass on the latest commit before this remediation is considered CI-verified.
+GitHub Actions workflow #116 passed on commit `29f7a6ea`: clean installs, full dependency audits, TypeScript checks, production builds, all automated tests, Prisma schema validation and initial migration-file checks. Both frontend and backend jobs passed.
 
 ## Remaining risks and work
 
@@ -37,7 +35,9 @@ The full audit, clean install, typecheck, build, unit tests, cryptographic JWT t
 - The current rate limiter is process-local. A shared Redis-backed store is needed before horizontal scaling.
 - Authentication UI, signup/sign-in flows, account recovery and email verification are not connected yet.
 - Production Supabase, Render and Netlify configuration has not been tested.
-- Secret scanning, branch protection, deployment hardening and external penetration testing remain separate checks.
+- No real `.env` file is present in the tracked repository tree; only placeholder `.env.example` files are present. A full historical secret scan and GitHub secret-scanning alert review were not verified.
+- No GitHub rulesets were returned by the repository rulesets endpoint; classic branch protection could not be verified with the available repository permissions. Check `Settings → Branches` manually and protect `main`.
+- Deployment hardening and external penetration testing remain separate checks.
 
 ## Operational rule
 
