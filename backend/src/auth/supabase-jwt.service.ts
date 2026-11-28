@@ -56,6 +56,11 @@ export class SupabaseJwtService implements OnModuleInit {
         requiredClaims: ["exp", "iat", "sub", "role"],
       });
 
+      const now = Math.floor(Date.now() / 1000);
+      if (typeof payload.iat !== "number" || payload.iat > now + 30) {
+        throw new Error("The token issued-at claim is invalid or in the future.");
+      }
+
       const user = this.toAuthenticatedUser(payload);
       if (!user) {
         throw new Error("Required user claims are missing.");
