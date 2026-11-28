@@ -53,7 +53,8 @@
 - [ ] Add organization-scoped services and apply the guard to every future tenant-owned route.
 - [ ] Add PostgreSQL Row-Level Security as defense in depth, with safe transaction-scoped tenant context.
 - [ ] Add integration tests proving organization A cannot read or mutate organization B data.
-- [x] Add baseline global API rate limiting and Helmet response security headers.
+- [x] Add global API rate limiting at 100 requests per rolling second per client IP, with an HTTP burst smoke test, and Helmet response security headers.
+- [ ] Replace the process-local rate-limit store with shared Redis storage before running multiple backend instances; add stricter limits to authentication endpoints before enabling those flows.
 - [x] Disable CORS credential sharing while authentication uses bearer tokens only.
 - [x] Validate organization UUIDs before querying membership.
 - [x] Add Dependabot weekly updates and pin CI actions to immutable commit SHAs.
