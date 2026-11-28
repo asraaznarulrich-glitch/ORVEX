@@ -1,6 +1,6 @@
 # ORVEX — Phase 1 technical plan
 
-**Status:** In progress. The database schema and first authorization building block are in the repository; authentication, enforced tenant isolation and migrations remain incomplete.
+**Status:** In progress. The database schema and first authorization building block are in the repository; production dependency audits and CI pass. Authentication, enforced tenant isolation and migrations remain incomplete.
 
 ## 1. Database and hosting
 - Managed PostgreSQL via the existing Supabase project.
@@ -20,7 +20,7 @@ The current Prisma schema contains:
 - `Session`: hashed session token, expiry and revocation timestamp.
 - `AuditEvent`: optional organization and actor references, action, target metadata and timestamp.
 
-The schema is a first foundation and must be reviewed before its first migration is applied to Supabase.
+The schema is a first foundation and must be reviewed before its first migration is applied to Supabase. Production dependency overrides currently resolve PostCSS to 8.5.34 and Effect to 3.22.5; `npm audit --omit=dev` passes for both applications.
 
 ## 3. Tenant isolation — non-negotiable
 - Every tenant-owned record must carry an `organizationId`.
@@ -46,7 +46,7 @@ The schema is a first foundation and must be reviewed before its first migration
 Initial organization roles: `OWNER`, `ADMIN`, `MEMBER`. Define explicit permission checks per action. A platform-level role (if introduced) must remain distinct from organization roles. Never rely on frontend role flags.
 
 ## 6. Implementation sequence
-1. Prisma 7, PostgreSQL adapter and initial schema — integrated; CI verification is being checked.
+1. Prisma 7, PostgreSQL adapter and initial schema — integrated; CI build, tests and production dependency audits pass (workflow #52).
 2. Generate and review the initial SQL migration without connecting to or modifying the production database.
 3. Add a readiness check that reports database availability without exposing credentials or internal error details.
 4. Apply the reviewed migration to Supabase only after explicit owner approval and private credential configuration.
