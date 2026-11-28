@@ -70,5 +70,6 @@ jobs:
             echo "Lockfiles are already up to date."
           else
             git commit -m "Update verified npm lockfiles"
+            git pull --rebase origin main
             git push
           fi
