@@ -43,6 +43,7 @@
     "typescript": "^5.8.0"
   },
   "overrides": {
-    "effect": "^3.22.1"
+    "effect": "^3.22.1",
+    "glob": "^14.0.2"
   }
 }
