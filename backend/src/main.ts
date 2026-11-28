@@ -62,7 +62,8 @@ async function bootstrap() {
   const allowedOrigins = getAllowedOrigins();
   app.enableCors({
     origin: allowedOrigins.length > 0 ? allowedOrigins : ["http://localhost:3000"],
-    credentials: true,
+    // ORVEX uses Authorization bearer tokens; cookies are not enabled yet.
+    credentials: false,
   });
 
   app.enableShutdownHooks();
