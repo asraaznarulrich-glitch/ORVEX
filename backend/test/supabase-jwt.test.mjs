@@ -6,6 +6,7 @@ import { SupabaseJwtService } from "../dist/auth/supabase-jwt.service.js";
 
 test("Supabase JWT verification validates signature, issuer, audience, expiry and identity claims", async () => {
   const { publicKey, privateKey } = await generateKeyPair("ES256");
+  const attackerKeyPair = await generateKeyPair("ES256");
   const jwk = await exportJWK(publicKey);
   const jwks = { keys: [{ ...jwk, kid: "orvex-test-key", alg: "ES256", use: "sig" }] };
   const server = createServer((request, response) => {
@@ -41,6 +42,7 @@ test("Supabase JWT verification validates signature, issuer, audience, expiry an
     role = "authenticated",
     issuedAt = Math.floor(Date.now() / 1000),
     expiresAt = Math.floor(Date.now() / 1000) + 300,
+    signingKey = privateKey,
   } = {}) => new SignJWT({ role })
     .setProtectedHeader({ alg: "ES256", kid: "orvex-test-key" })
     .setIssuer(tokenIssuer)
@@ -48,13 +50,16 @@ test("Supabase JWT verification validates signature, issuer, audience, expiry an
     .setSubject(subject)
     .setIssuedAt(issuedAt)
     .setExpirationTime(expiresAt)
-    .sign(privateKey);
+    .sign(signingKey);
 
   try {
     const validToken = await sign();
     const user = await service.verifyAccessToken(validToken);
     assert.equal(user.id, "00000000-0000-4000-8000-000000000001");
     assert.equal(user.role, "authenticated");
+
+    const forgedSignature = await sign({ signingKey: attackerKeyPair.privateKey });
+    await assert.rejects(service.verifyAccessToken(forgedSignature), error => error.getStatus() === 401);
 
     const wrongIssuer = await sign({ tokenIssuer: "https://attacker.example/auth/v1" });
     await assert.rejects(service.verifyAccessToken(wrongIssuer), error => error.getStatus() === 401);
