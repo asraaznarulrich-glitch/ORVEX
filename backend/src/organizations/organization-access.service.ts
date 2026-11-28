@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
-import { PrismaService } from "./prisma.service.js";
+import { PrismaService } from "../database/prisma.service.js";
 
 export type OrganizationRole = "OWNER" | "ADMIN" | "MEMBER";
 
