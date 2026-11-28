@@ -8,7 +8,7 @@ export class OrganizationAccessService {
   constructor(private readonly prisma: PrismaService) {}
 
   async requireMembership(userId: string, organizationId: string) {
-    const membership = await this.prisma.db.membership.findUnique({
+    const membership = await this.prisma.withUserContext(userId, (tx) => tx.membership.findUnique({
       where: {
         userId_organizationId: {
           userId,
@@ -21,7 +21,7 @@ export class OrganizationAccessService {
         organizationId: true,
         role: true,
       },
-    });
+    }));
 
     if (!membership) {
       throw new ForbiddenException("You do not have access to this organization.");
