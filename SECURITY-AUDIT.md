@@ -24,7 +24,7 @@ This is an engineering review, not a penetration test or a certification.
 
 The full `npm audit` runs now pass for both frontend and backend, including development dependencies. The backend findings were three moderate alerts associated with `glob` and `minimatch`; the lockfile now resolves `glob@14.0.6` and `minimatch@11.0.9`.
 
-GitHub Actions workflow #116 passed on commit `29f7a6ea`: clean installs, full dependency audits, TypeScript checks, production builds, all automated tests, Prisma schema validation and initial migration-file checks. Both frontend and backend jobs passed.
+GitHub Actions workflow #118 passed on commit `cfb7e90e`: clean installs, full dependency audits, TypeScript checks, production builds, all automated tests, Prisma schema validation and initial migration-file checks. Both frontend and backend jobs passed.
 
 ## Remaining risks and work
 
