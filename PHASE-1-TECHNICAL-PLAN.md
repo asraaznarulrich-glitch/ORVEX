@@ -1,37 +1,39 @@
 # ORVEX — Phase 1 technical plan
 
-**Status:** Proposed architecture; implementation has not started.  
-**Scope:** PostgreSQL, Prisma, identity, organizations and tenant isolation.
+**Status:** In progress. The database schema and first authorization building block are in the repository; authentication, enforced tenant isolation and migrations remain incomplete.
 
 ## 1. Database and hosting
-- Use managed PostgreSQL (Supabase PostgreSQL is the current preferred option).
-- The NestJS backend is the only application allowed to connect to the database.
-- Store `DATABASE_URL` only in the backend hosting environment (Render), never in frontend variables or Git.
+- Managed PostgreSQL via the existing Supabase project.
+- The NestJS backend is the only application allowed to connect to PostgreSQL.
+- Store `DATABASE_URL` only in the backend hosting environment (Render), never in frontend variables, source control or chat.
 - Use TLS for remote database connections and least-privilege credentials.
 - Keep schema changes in versioned Prisma migrations; never rely on ad-hoc production schema edits.
-- Separate local/development and production databases.
+- Separate development and production databases.
+- Prisma ORM 7 with the PostgreSQL driver adapter is integrated. The database connection is disabled in local/test mode when no URL is present; production startup fails closed without `DATABASE_URL`.
 
 ## 2. Initial relational model
-Proposed entities:
-- `User`: account identity, normalized unique email, password hash (if using local credentials), status and timestamps.
-- `Organization`: tenant/company workspace, name, slug and timestamps.
-- `Membership`: user-to-organization relationship, role, status and timestamps.
-- `Invitation`: organization invitation, hashed token, expiry, accepted/revoked timestamps.
-- `Session` or refresh-token records: hashed credentials, expiry, revocation and rotation metadata.
-- `AuditEvent`: actor, organization scope, action, target type/id, safe metadata and timestamp.
+The current Prisma schema contains:
+- `User`: email, normalized unique email, optional password hash, status and timestamps.
+- `Organization`: tenant workspace, name, unique slug and timestamps.
+- `Membership`: user-to-organization relation, role and timestamps; unique user/organization pair.
+- `Invitation`: organization invitation with hashed token, expiry and revocation/acceptance timestamps.
+- `Session`: hashed session token, expiry and revocation timestamp.
+- `AuditEvent`: optional organization and actor references, action, target metadata and timestamp.
 
-Use stable UUID identifiers. Define indexes and uniqueness constraints explicitly (including normalized email and organization slug). Finalize exact fields after the user and organization flows are specified.
+The schema is a first foundation and must be reviewed before its first migration is applied to Supabase.
 
 ## 3. Tenant isolation — non-negotiable
 - Every tenant-owned record must carry an `organizationId`.
 - Every read, update and delete must be scoped by the authenticated user's active organization and verified membership.
 - Never trust an organization ID supplied by the browser without checking membership and role.
 - Authorization must be enforced in backend services, not only hidden in the UI.
-- Add negative tests proving that a user in organization A cannot read or mutate organization B data.
-- Consider PostgreSQL row-level security as defense in depth after the application-level model is tested; do not treat it as a substitute for authorization.
+- The first `OrganizationAccessService` now checks membership using the composite `userId + organizationId` key and enforces OWNER/ADMIN/MEMBER role requirements.
+- This helper is not yet wired to authenticated routes and does not by itself complete tenant isolation.
+- Add negative integration tests proving that a user in organization A cannot read or mutate organization B data.
+- Add PostgreSQL Row-Level Security as defense in depth, using transaction-scoped tenant context; never rely on a session-level setting that can leak across pooled connections.
 
 ## 4. Authentication baseline
-- Decide whether ORVEX owns password authentication or delegates identity to a trusted provider before implementation.
+- Decide whether ORVEX owns password authentication or delegates identity to a trusted provider before implementing login.
 - If passwords are stored, use Argon2id (or an equivalently strong maintained password hashing implementation); never encrypt or store plaintext passwords.
 - Require verified email before sensitive account actions.
 - Password reset and invitation tokens must be random, single-use, stored hashed and expire.
@@ -41,17 +43,18 @@ Use stable UUID identifiers. Define indexes and uniqueness constraints explicitl
 - Add tests for expiry, replay, revocation, brute-force throttling and unauthorized access.
 
 ## 5. Roles and permissions
-Initial organization roles: `owner`, `admin`, `member`. Define explicit permission checks per action. A user's platform role (if any) must remain distinct from their organization role. Do not rely on frontend role flags.
+Initial organization roles: `OWNER`, `ADMIN`, `MEMBER`. Define explicit permission checks per action. A platform-level role (if introduced) must remain distinct from organization roles. Never rely on frontend role flags.
 
 ## 6. Implementation sequence
-1. User confirms/provisions the managed PostgreSQL project and keeps credentials private.
-2. Add Prisma ORM 7 to the backend, configure the PostgreSQL driver adapter, schema and migration commands. (Initial integration committed; dependency lockfile generation and CI verification pending.)
-3. Implement health/readiness checks without leaking database details.
-4. Add User, Organization, Membership and AuditEvent schema/migrations.
-5. Implement authentication and session lifecycle.
-6. Implement organization membership and role guards.
-7. Add tenant-isolation integration tests and security tests.
-8. Only then start customer, payment and other business modules.
+1. Prisma 7, PostgreSQL adapter and initial schema — integrated; CI verification is being checked.
+2. Generate and review the initial SQL migration without connecting to or modifying the production database.
+3. Add a readiness check that reports database availability without exposing credentials or internal error details.
+4. Apply the reviewed migration to Supabase only after explicit owner approval and private credential configuration.
+5. Choose and implement the authentication provider and secure session lifecycle.
+6. Add authenticated request context and organization membership/role guards.
+7. Implement transaction-safe tenant context and PostgreSQL RLS policies.
+8. Add cross-tenant integration tests and security tests.
+9. Only then start customer, payment and other business modules.
 
-## 7. Not included yet
-A Supabase PostgreSQL project has been created by the owner and its Session Pooler URI has been located; the credential has not been shared or configured in hosting. Prisma ORM 7 dependencies and the initial relational schema are now being added. No migration has yet been applied, no authentication or tenant isolation enforcement is implemented, and no production secrets are configured. This document is a design baseline, not a claim of completed functionality.
+## 7. Current environment and safety
+The owner has a Supabase project and has located its Session Pooler connection URI. The password and full connection string must remain private and have not been added to the repository. No migration has been applied to Supabase. No production hosting secrets are configured. The dashboard and module catalogue remain demo/planned features, not production functionality.
