@@ -16,7 +16,7 @@ interface AuthenticatedRequest {
 
 export function extractBearerToken(header: string | undefined): string | null {
   if (!header) return null;
-  const match = /^Bearer ([A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+)$/i.exec(header.trim());
+  const match = /^Bearer ([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)$/i.exec(header.trim());
   const token = match?.[1];
   return token && token.length <= 8192 ? token : null;
 }
