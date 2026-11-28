@@ -21,15 +21,14 @@ enum OrganizationRole {
 }
 
 model User {
-  id             String       @id @default(uuid()) @db.Uuid
+  /// Mirrors the UUID assigned by Supabase Auth (auth.users).
+  id             String       @id @db.Uuid
   email          String       @db.VarChar(320)
   emailNormalized String      @unique @db.VarChar(320)
-  passwordHash   String?      @db.VarChar(255)
   status         UserStatus   @default(PENDING_VERIFICATION)
   createdAt      DateTime     @default(now()) @db.Timestamptz(3)
   updatedAt      DateTime     @updatedAt @db.Timestamptz(3)
   memberships    Membership[]
-  sessions       Session[]
   invitations    Invitation[] @relation("InvitationCreator")
   auditEvents    AuditEvent[] @relation("AuditActor")
 
@@ -78,18 +77,6 @@ model Invitation {
 
   @@index([organizationId, emailNormalized])
   @@index([expiresAt])
-}
-
-model Session {
-  id        String    @id @default(uuid()) @db.Uuid
-  userId    String    @db.Uuid
-  tokenHash String    @unique @db.VarChar(255)
-  expiresAt DateTime  @db.Timestamptz(3)
-  revokedAt DateTime? @db.Timestamptz(3)
-  createdAt DateTime  @default(now()) @db.Timestamptz(3)
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, expiresAt])
 }
 
 model AuditEvent {
