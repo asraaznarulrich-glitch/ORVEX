@@ -1,8 +1,8 @@
-# ORVEX — Phase 0 foundation checklist
+# ORVEX — Phase 0 and Phase 1 checklist
 
-Phase 0 establishes a reliable application scaffold before database and business features are introduced.
+## Phase 0 — application foundation
 
-## Implemented
+### Implemented
 - [x] Separate root-level `frontend/` (Next.js) and `backend/` (NestJS API) applications.
 - [x] TypeScript strict checks configured for both applications.
 - [x] Versioned API prefix: `/api/v1`.
@@ -15,17 +15,34 @@ Phase 0 establishes a reliable application scaffold before database and business
 - [x] Reproducible npm lockfiles and clean `npm ci` installs.
 - [x] Deployment instructions for separate Netlify and Render services.
 
-## Verification
-- [x] Frontend TypeScript check, production build and runtime smoke test pass in GitHub Actions.
-- [x] Backend TypeScript check, production build and API smoke tests pass in GitHub Actions.
+### Verification
+- [x] Frontend TypeScript check, production build and runtime smoke test passed in GitHub Actions.
+- [x] Backend TypeScript check, production build and API smoke tests passed in GitHub Actions.
 - [x] API startup tests reject missing production CORS origins, malformed CORS origins and invalid ports.
-- [x] Quality workflow run #30 passed on the root-level `backend/` and `frontend/` structure.
-- [x] Lockfile workflow run #2 passed on the same commit.
-- A green CI run does not replace external production deployment checks, security review or end-to-end tests against real services.
+- [x] Quality workflow #41 passed on commit `2585e45`.
+- [x] Lockfile workflow #4 passed.
+- [ ] Review actual Netlify and Render configuration after services are created.
+- [ ] Complete live deployment smoke tests.
 
-## Remaining before Phase 0 can be signed off
-- [ ] Review deployment configuration against actual Netlify and Render service settings once created.
-- [ ] Complete a live deployment smoke test after hosting, domains and environment variables are configured.
+## Phase 1 — database, identity and tenant security
 
-## Next phase
-Phase 1 covers PostgreSQL, Prisma, authentication, organizations, roles and tenant isolation. These are not implemented yet. Do not treat the API or dashboard as production-ready or as supporting real user data.
+### Implemented in the repository
+- [x] Prisma ORM 7 and PostgreSQL driver adapter added to the backend.
+- [x] Initial relational schema drafted for User, Organization, Membership, Invitation, Session and AuditEvent.
+- [x] Prisma client generation integrated into backend typecheck and build.
+- [x] Prisma service manages database connection lifecycle; production startup requires `DATABASE_URL`.
+- [x] Organization membership authorization service checks the user-and-organization composite key.
+- [x] Organization role authorization supports OWNER, ADMIN and MEMBER roles.
+- [x] Unit-level authorization tests added for tenant membership lookup and role enforcement.
+
+### Not yet implemented or verified
+- [ ] Confirm the newest GitHub Actions run for the organization authorization code and tests.
+- [ ] Generate, review and commit the initial Prisma SQL migration.
+- [ ] Apply the reviewed migration to the Supabase project only after a separate confirmation.
+- [ ] Implement authentication, secure sessions, email verification and password reset.
+- [ ] Add authenticated request context and enforce organization checks on every tenant-owned route.
+- [ ] Add PostgreSQL Row-Level Security as defense in depth, with safe transaction-scoped tenant context.
+- [ ] Add integration tests proving organization A cannot read or mutate organization B data.
+- [ ] Add rate limiting, CSRF protection where cookie sessions are used, and security audit coverage.
+
+A green CI run does not mean that authentication, tenant isolation or production security is complete. Do not use the current API for real customer data.
