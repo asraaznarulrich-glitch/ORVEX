@@ -62,3 +62,18 @@ test("organization guard rejects missing organization context", async () => {
 
   await assert.rejects(guard.canActivate(context), error => error.getStatus() === 403);
 });
+
+test("organization guard rejects malformed organization UUID before database access", async () => {
+  let databaseCalled = false;
+  const guard = new OrganizationAccessGuard(
+    { getAllAndOverride: () => undefined },
+    {
+      requireMembership: async () => { databaseCalled = true; },
+      requireRole: async () => { databaseCalled = true; },
+    },
+  );
+  const { context } = makeContext({ organizationId: "not-a-uuid" });
+
+  await assert.rejects(guard.canActivate(context), error => error.getStatus() === 400);
+  assert.equal(databaseCalled, false);
+});
