@@ -68,6 +68,9 @@ test("Supabase JWT verification validates signature, issuer, audience, expiry an
     });
     await assert.rejects(service.verifyAccessToken(expired), error => error.getStatus() === 401);
 
+    const futureIssuedAt = await sign({ issuedAt: Math.floor(Date.now() / 1000) + 120 });
+    await assert.rejects(service.verifyAccessToken(futureIssuedAt), error => error.getStatus() === 401);
+
     const wrongRole = await sign({ role: "service_role" });
     await assert.rejects(service.verifyAccessToken(wrongRole), error => error.getStatus() === 401);
 
