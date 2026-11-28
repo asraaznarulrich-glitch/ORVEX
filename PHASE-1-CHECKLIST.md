@@ -13,16 +13,16 @@
 - [x] Safe environment examples for frontend and backend.
 - [x] GitHub Actions workflows for frontend and backend typechecks, production builds and smoke tests.
 - [x] Reproducible npm lockfiles and clean `npm ci` installs.
-- [x] Production dependency audits pass for frontend and backend (`npm audit --omit=dev`).
-- [x] Vulnerable PostCSS and Effect dependency versions are overridden and locked to patched releases.
+- [x] Full dependency audits pass for frontend and backend (`npm audit`, including development dependencies).
+- [x] Vulnerable PostCSS, Effect, glob and minimatch dependency versions are overridden or resolved to patched releases and locked.
 - [x] Deployment instructions for separate Netlify and Render services.
 
 ### Verification
 - [x] Frontend TypeScript check, production build and runtime smoke test passed in GitHub Actions.
 - [x] Backend TypeScript check, production build and API smoke tests passed in GitHub Actions.
 - [x] API startup tests reject missing production CORS origins, malformed CORS origins and invalid ports.
-- [x] Latest quality workflow #90 passed on commit `388d1a28` (frontend and backend, including authentication, organization guard, rate limiting and Helmet).
-- [x] Lockfile workflow #10 passed; the initial migration was generated without connecting to Supabase.
+- [x] Latest quality workflow #116 passed on commit `29f7a6ea`: full npm audits, clean installs, TypeScript checks, builds, tests, Prisma validation and migration-file check all passed.
+- [x] Lockfile workflow #17 passed; lockfile maintenance now runs with scripts disabled and is separated from read-only CI.
 - [ ] Review actual Netlify and Render configuration after services are created.
 - [ ] Complete live deployment smoke tests.
 
@@ -37,11 +37,11 @@
 - [x] Organization membership authorization service checks the user-and-organization composite key.
 - [x] Organization role authorization supports OWNER, ADMIN and MEMBER roles.
 - [x] Unit-level authorization tests added for tenant membership lookup and role enforcement.
-- [x] Backend verifies Supabase JWTs against the project's public JWKS using ES256/RS256/EdDSA, with issuer, audience, expiry, issued-at, subject and role checks.
+- [x] Backend verifies Supabase JWTs against the project's public JWKS using ES256/RS256, with issuer, audience, expiry, issued-at, subject UUID, authenticated role and future-issued-token checks.
 - [x] Authenticated organization access endpoint and route guard check the verified user against the organization ID in the URL.
 - [x] Organization role metadata supports OWNER/ADMIN restrictions on future tenant routes.
 - [x] Global default-deny authentication guard added; only health and static module-catalogue routes are explicitly public.
-- [x] Verified user context decorator and unit tests for bearer parsing, public bypass, missing credentials and verified identity attachment.
+- [x] Verified user context decorator; strict three-segment JWT bearer parsing with an 8 KB cap; unit and cryptographic tests cover signature, issuer, audience, expiry, identity, role and malformed tokens.
 
 ### Not yet implemented or verified
 - [x] Confirm GitHub Actions verifies authentication and organization authorization tests, builds and production dependency audits (workflow #84 passed).
@@ -54,7 +54,11 @@
 - [ ] Add PostgreSQL Row-Level Security as defense in depth, with safe transaction-scoped tenant context.
 - [ ] Add integration tests proving organization A cannot read or mutate organization B data.
 - [x] Add baseline global API rate limiting and Helmet response security headers.
+- [x] Disable CORS credential sharing while authentication uses bearer tokens only.
+- [x] Validate organization UUIDs before querying membership.
+- [x] Add Dependabot weekly updates and pin CI actions to immutable commit SHAs.
 - [ ] Add endpoint-specific limits for authentication flows and CSRF protection if cookie-based state-changing requests are introduced.
-- [ ] Add security audit coverage and cross-tenant integration tests.
+- [ ] Add PostgreSQL cross-tenant integration tests and production RLS verification.
+- [ ] Verify GitHub `main` branch protection and secret-scanning settings in repository Settings; these controls were not confirmed by the repository API.
 
 A green CI run does not mean that authentication, tenant isolation or production security is complete. Do not use the current API for real customer data.
