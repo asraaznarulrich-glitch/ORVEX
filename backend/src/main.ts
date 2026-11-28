@@ -1,6 +1,6 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
+import { AppModule } from "./app.module.js";
 
 function getAllowedOrigins(): string[] {
   const rawOrigins = (process.env.CORS_ORIGINS ?? "")

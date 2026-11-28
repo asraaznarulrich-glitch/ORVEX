@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/generate-lockfiles.yml"
+      - "backend/package.json"
+      - "frontend/package.json"
   workflow_dispatch:
 
 permissions:

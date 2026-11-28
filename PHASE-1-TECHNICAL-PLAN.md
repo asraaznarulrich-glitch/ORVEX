@@ -45,7 +45,7 @@ Initial organization roles: `owner`, `admin`, `member`. Define explicit permissi
 
 ## 6. Implementation sequence
 1. User confirms/provisions the managed PostgreSQL project and keeps credentials private.
-2. Add Prisma to the backend, configure schema and migration commands.
+2. Add Prisma ORM 7 to the backend, configure the PostgreSQL driver adapter, schema and migration commands. (Initial integration committed; dependency lockfile generation and CI verification pending.)
 3. Implement health/readiness checks without leaking database details.
 4. Add User, Organization, Membership and AuditEvent schema/migrations.
 5. Implement authentication and session lifecycle.
@@ -54,4 +54,4 @@ Initial organization roles: `owner`, `admin`, `member`. Define explicit permissi
 8. Only then start customer, payment and other business modules.
 
 ## 7. Not included yet
-No database has been provisioned, no Prisma dependency/schema/migration exists, no authentication or tenant isolation is implemented, and no production secrets are configured. This document is a design baseline, not a claim of completed functionality.
+A Supabase PostgreSQL project has been created by the owner and its Session Pooler URI has been located; the credential has not been shared or configured in hosting. Prisma ORM 7 dependencies and the initial relational schema are now being added. No migration has yet been applied, no authentication or tenant isolation enforcement is implemented, and no production secrets are configured. This document is a design baseline, not a claim of completed functionality.
