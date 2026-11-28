@@ -53,6 +53,7 @@ export class SupabaseJwtService implements OnModuleInit {
         issuer: this.issuer,
         audience: "authenticated",
         algorithms: ["ES256", "RS256", "EdDSA"],
+        requiredClaims: ["exp", "iat", "sub", "role"],
       });
 
       const user = this.toAuthenticatedUser(payload);
