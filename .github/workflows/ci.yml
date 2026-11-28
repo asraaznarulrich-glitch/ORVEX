@@ -16,6 +16,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: orvex-quality-main
+  cancel-in-progress: true
+
 jobs:
   frontend:
     name: Frontend build and typecheck
