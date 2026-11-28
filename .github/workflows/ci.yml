@@ -58,3 +58,5 @@ jobs:
       - run: npm run typecheck
       - run: npm run build
       - run: npm test
+      - run: npx prisma validate
+      - run: test -s prisma/migrations/20261128000000_initial/migration.sql
