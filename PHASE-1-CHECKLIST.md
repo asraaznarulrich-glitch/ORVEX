@@ -13,14 +13,16 @@
 - [x] Safe environment examples for frontend and backend.
 - [x] GitHub Actions workflows for frontend and backend typechecks, production builds and smoke tests.
 - [x] Reproducible npm lockfiles and clean `npm ci` installs.
+- [x] Production dependency audits pass for frontend and backend (`npm audit --omit=dev`).
+- [x] Vulnerable PostCSS and Effect dependency versions are overridden and locked to patched releases.
 - [x] Deployment instructions for separate Netlify and Render services.
 
 ### Verification
 - [x] Frontend TypeScript check, production build and runtime smoke test passed in GitHub Actions.
 - [x] Backend TypeScript check, production build and API smoke tests passed in GitHub Actions.
 - [x] API startup tests reject missing production CORS origins, malformed CORS origins and invalid ports.
-- [x] Quality workflow #41 passed on commit `2585e45`.
-- [x] Lockfile workflow #4 passed.
+- [x] Quality workflow #52 passed on commit `b14d386` (frontend and backend).
+- [x] Lockfile workflow #6 passed after dependency overrides were added.
 - [ ] Review actual Netlify and Render configuration after services are created.
 - [ ] Complete live deployment smoke tests.
 
@@ -36,7 +38,7 @@
 - [x] Unit-level authorization tests added for tenant membership lookup and role enforcement.
 
 ### Not yet implemented or verified
-- [ ] Confirm the newest GitHub Actions run for the organization authorization code and tests.
+- [x] Confirm GitHub Actions verifies organization authorization tests, builds and production dependency audits.
 - [ ] Generate, review and commit the initial Prisma SQL migration.
 - [ ] Apply the reviewed migration to the Supabase project only after a separate confirmation.
 - [ ] Implement authentication, secure sessions, email verification and password reset.
