@@ -45,6 +45,10 @@ function getAllowedOrigins(): string[] {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  if (process.env.NODE_ENV === "production") {
+    app.getHttpAdapter().getInstance().set("trust proxy", 1);
+  }
+
   app.setGlobalPrefix("api/v1");
   app.use(helmet());
   app.useGlobalPipes(
