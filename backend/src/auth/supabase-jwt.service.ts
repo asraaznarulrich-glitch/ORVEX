@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit, UnauthorizedException } from "@nestjs/common";
-import { createRemoteJWKSet, jwtVerify, type JWTPayload, type JWTVerifyGetKey } from "jose";
+import { createRemoteJWKSet, jwtVerify, type JWTPayload } from "jose";
 import type { AuthenticatedUser } from "./authenticated-user.js";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -7,7 +7,7 @@ const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3
 @Injectable()
 export class SupabaseJwtService implements OnModuleInit {
   private issuer: string | undefined;
-  private jwks: JWTVerifyGetKey | undefined;
+  private jwks: ReturnType<typeof createRemoteJWKSet> | undefined;
 
   onModuleInit(): void {
     const rawUrl = process.env.SUPABASE_URL;
