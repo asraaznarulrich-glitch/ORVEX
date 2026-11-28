@@ -69,6 +69,16 @@ test("API starts and exposes health and module catalogue endpoints", async () =>
       `http://127.0.0.1:${port}/api/v1/organizations/00000000-0000-4000-8000-000000000001/access`,
     );
     assert.equal(protectedResponse.status, 401);
+
+    // A short burst from this test client must hit the configured per-IP ceiling.
+    const burstResponses = await Promise.all(
+      Array.from({ length: 110 }, () => fetch(`http://127.0.0.1:${port}/api/v1/health`)),
+    );
+    assert.ok(
+      burstResponses.some((response) => response.status === 429),
+      "Expected the API to reject requests after the per-IP rate limit is reached.",
+    );
+    assert.ok(burstResponses.every((response) => [200, 429].includes(response.status)));
   } catch (error) {
     throw new Error(`${error instanceof Error ? error.message : String(error)}\n${stderr}`);
   } finally {
