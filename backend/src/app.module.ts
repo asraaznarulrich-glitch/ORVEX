@@ -2,6 +2,7 @@ import { Controller, Get, Module } from "@nestjs/common";
 import { PrismaModule } from "./database/prisma.module.js";
 import { AuthModule } from "./auth/auth.module.js";
 import { Public } from "./auth/public.decorator.js";
+import { OrganizationsModule } from "./organizations/organizations.module.js";
 
 const moduleCatalog = [
   { id: "customers", name: "Clients & prospects", category: "business", status: "planned" },
@@ -31,7 +32,7 @@ class ModulesController {
 }
 
 @Module({
-  imports: [AuthModule, PrismaModule],
+  imports: [AuthModule, PrismaModule, OrganizationsModule],
   controllers: [HealthController, ModulesController],
 })
 export class AppModule {}
