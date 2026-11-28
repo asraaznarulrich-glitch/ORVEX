@@ -48,7 +48,7 @@ test("organization guard rejects missing authenticated user", async () => {
     { getAllAndOverride: () => undefined },
     { requireMembership: async () => {}, requireRole: async () => {} },
   );
-  const { context } = makeContext({ userId: undefined });
+  const { context } = makeContext({ userId: null });
 
   await assert.rejects(guard.canActivate(context), error => error.getStatus() === 401);
 });
@@ -58,7 +58,7 @@ test("organization guard rejects missing organization context", async () => {
     { getAllAndOverride: () => undefined },
     { requireMembership: async () => {}, requireRole: async () => {} },
   );
-  const { context } = makeContext({ organizationId: undefined });
+  const { context } = makeContext({ organizationId: null });
 
   await assert.rejects(guard.canActivate(context), error => error.getStatus() === 403);
 });
