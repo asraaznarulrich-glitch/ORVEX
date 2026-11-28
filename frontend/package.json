@@ -10,15 +10,15 @@
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
-    "next": "^15.3.0",
+    "next": "^16.4.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "^26.6.10",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "typescript": "^5.8.0"
+    "typescript": "^7.0.2"
   },
   "overrides": {
     "postcss": "^8.5.23"
