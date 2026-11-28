@@ -6,6 +6,7 @@ on:
     paths:
       - ".github/workflows/generate-lockfiles.yml"
       - "backend/package.json"
+      - "backend/prisma/schema.prisma"
       - "frontend/package.json"
   workflow_dispatch:
 
