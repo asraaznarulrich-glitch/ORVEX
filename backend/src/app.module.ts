@@ -38,7 +38,9 @@ class ModulesController {
     AuthModule,
     PrismaModule,
     OrganizationsModule,
-    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 120 }]),
+    // Default tracker is the client IP: 100 requests per rolling second per IP.
+    // This in-memory store is suitable for a single instance; use shared Redis storage before horizontal scaling.
+    ThrottlerModule.forRoot([{ ttl: 1_000, limit: 100 }]),
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
   controllers: [HealthController, ModulesController],
