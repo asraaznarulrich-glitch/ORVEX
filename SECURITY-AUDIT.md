@@ -18,7 +18,7 @@ This is an engineering review, not a penetration test or a certification.
 - GitHub Actions are pinned to immutable commit SHAs, use read-only repository permissions for build/audit jobs, and disable persisted checkout credentials.
 - Lockfile maintenance is isolated in a dedicated workflow. It uses `--ignore-scripts`, does not run builds or tests while the write-scoped token is present, and only commits lockfiles.
 - Dependabot is configured for weekly npm and GitHub Actions updates.
-- The API applies baseline rate limiting, Helmet response headers, strict CORS origin parsing, DTO validation, and production configuration checks.
+- The API applies a default per-client-IP rate limit of 100 requests per rolling second, Helmet response headers, strict CORS origin parsing, DTO validation, and production configuration checks. A live HTTP burst smoke test checks that excess requests receive HTTP 429. The current throttler store is in-memory and therefore is not shared across multiple API instances.
 
 ## Verification status
 
@@ -32,7 +32,7 @@ GitHub Actions workflow #119 passed on commit `f65bb922`: clean installs, full d
 - PostgreSQL row-level security (RLS) and transaction-scoped tenant context are not implemented.
 - Organization authorization has unit tests, but cross-tenant isolation still needs integration tests against PostgreSQL.
 - The organization access route is a security foundation; future tenant-owned endpoints must consistently apply membership and role checks.
-- The current rate limiter is process-local. A shared Redis-backed store is needed before horizontal scaling.
+- The current 100-requests/second-per-IP rate limiter is process-local. It can be bypassed across multiple API instances because each instance maintains its own counter; configure a shared Redis-backed throttler store before horizontal scaling. The generous general limit must be complemented by stricter endpoint-specific limits for sign-in, sign-up and password recovery before those flows go live.
 - Authentication UI, signup/sign-in flows, account recovery and email verification are not connected yet.
 - Production Supabase, Render and Netlify configuration has not been tested.
 - No real `.env` file is present in the tracked repository tree; only placeholder `.env.example` files are present. A full historical secret scan and GitHub secret-scanning alert review were not verified.
