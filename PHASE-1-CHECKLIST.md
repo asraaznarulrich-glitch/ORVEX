@@ -39,7 +39,8 @@
 
 ### Not yet implemented or verified
 - [x] Confirm GitHub Actions verifies organization authorization tests, builds and production dependency audits.
-- [ ] Generate, review and commit the initial Prisma SQL migration.
+- [x] Generate and review the initial Prisma SQL migration from the Prisma 7 schema; the SQL and PostgreSQL migration lock are committed.
+- [ ] Apply the reviewed migration to the Supabase project only after a separate confirmation.
 - [ ] Apply the reviewed migration to the Supabase project only after a separate confirmation.
 - [ ] Implement authentication, secure sessions, email verification and password reset.
 - [ ] Add authenticated request context and enforce organization checks on every tenant-owned route.
