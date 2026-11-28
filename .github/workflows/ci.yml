@@ -3,6 +3,12 @@ name: ORVEX quality checks
 on:
   push:
     branches: [main]
+    paths:
+      - ".github/workflows/ci.yml"
+      - "backend/**"
+      - "frontend/**"
+      - "PHASE-1-CHECKLIST.md"
+      - "PHASE-1-TECHNICAL-PLAN.md"
   pull_request:
     branches: [main]
   workflow_dispatch:
