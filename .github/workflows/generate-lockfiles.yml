@@ -12,9 +12,13 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: orvex-lockfiles-main
+  cancel-in-progress: false
+
 jobs:
   lockfiles:
-    name: Generate lockfiles and verify clean installs
+    name: Generate and verify npm lockfiles
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,13 +30,29 @@ jobs:
 
       - name: Generate frontend lockfile
         working-directory: frontend
-        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+        run: npm install --package-lock-only --no-audit --no-fund
 
       - name: Generate backend lockfile
         working-directory: backend
-        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+        run: npm install --package-lock-only --no-audit --no-fund
 
-      - name: Commit generated lockfiles
+      - name: Verify frontend clean install and checks
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run typecheck
+          npm run build
+          npm test
+
+      - name: Verify backend clean install and checks
+        working-directory: backend
+        run: |
+          npm ci
+          npm run typecheck
+          npm run build
+          npm test
+
+      - name: Commit verified lockfiles
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -40,28 +60,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "Lockfiles are already up to date."
           else
-            git commit -m "Add reproducible npm lockfiles"
+            git commit -m "Update verified npm lockfiles"
             git push
           fi
-
-      - name: Install frontend from lockfile
-        working-directory: frontend
-        run: npm ci
-
-      - name: Verify frontend
-        working-directory: frontend
-        run: |
-          npm run typecheck
-          npm run build
-          npm test
-
-      - name: Install backend from lockfile
-        working-directory: backend
-        run: npm ci
-
-      - name: Verify backend
-        working-directory: backend
-        run: |
-          npm run typecheck
-          npm run build
-          npm test
