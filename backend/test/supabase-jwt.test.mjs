@@ -24,8 +24,8 @@ test("Supabase JWT verification validates signature, issuer, audience, expiry an
 
   const address = server.address();
   assert.ok(address && typeof address === "object");
-  const origin = \`http://127.0.0.1:\${address.port}\`;
-  const issuer = \`\${origin}/auth/v1\`;
+  const origin = "http://127.0.0.1:" + address.port;
+  const issuer = origin + "/auth/v1";
   const previousUrl = process.env.SUPABASE_URL;
   const previousNodeEnv = process.env.NODE_ENV;
   process.env.SUPABASE_URL = origin;
