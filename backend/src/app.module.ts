@@ -1,5 +1,7 @@
 import { Controller, Get, Module } from "@nestjs/common";
 import { PrismaModule } from "./database/prisma.module.js";
+import { AuthModule } from "./auth/auth.module.js";
+import { Public } from "./auth/public.decorator.js";
 
 const moduleCatalog = [
   { id: "customers", name: "Clients & prospects", category: "business", status: "planned" },
@@ -10,6 +12,7 @@ const moduleCatalog = [
   { id: "workspaces", name: "Espaces de travail", category: "collaboration", status: "planned" },
 ];
 
+@Public()
 @Controller("health")
 class HealthController {
   @Get()
@@ -18,6 +21,7 @@ class HealthController {
   }
 }
 
+@Public()
 @Controller("modules")
 class ModulesController {
   @Get()
@@ -27,7 +31,7 @@ class ModulesController {
 }
 
 @Module({
-  imports: [PrismaModule],
+  imports: [AuthModule, PrismaModule],
   controllers: [HealthController, ModulesController],
 })
 export class AppModule {}
