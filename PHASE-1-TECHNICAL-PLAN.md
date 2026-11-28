@@ -28,6 +28,7 @@ The schema is a first foundation and must be reviewed before its first migration
 - Authorization must be enforced in backend services, not only hidden in the UI.
 - The first `OrganizationAccessService` now checks membership using the composite `userId + organizationId` key and enforces OWNER/ADMIN/MEMBER role requirements.
 - This helper is not yet wired to authenticated routes and does not by itself complete tenant isolation.
+- The authenticated `/organizations/:organizationId/access` endpoint now uses `OrganizationAccessGuard`; every future tenant-owned controller must use the same guard or equivalent service checks.
 - Add negative integration tests proving that a user in organization A cannot read or mutate organization B data.
 - Add PostgreSQL Row-Level Security as defense in depth, using transaction-scoped tenant context; never rely on a session-level setting that can leak across pooled connections.
 
@@ -40,6 +41,8 @@ The schema is a first foundation and must be reviewed before its first migration
 - Rate-limit login, registration, verification and password-reset endpoints; avoid account-enumeration responses.
 - The backend now verifies access-token signatures through the Supabase JWKS endpoint (ES256/RS256/EdDSA), and checks issuer, audience, expiry, issued-at, subject and role. A global default-deny guard protects routes unless explicitly marked public.
 - Configure `SUPABASE_URL` in Render and confirm an asymmetric ES256/RS256 signing key is active. The backend intentionally does not accept legacy HS256 tokens through JWKS.
+- A global baseline rate limit (120 requests per minute per client IP) and Helmet security headers are enabled; production trusts one reverse-proxy hop for client IP detection.
+- Add stricter endpoint-specific limits for signup, sign-in, verification and password reset when those flows are implemented.
 - Add tests for session expiry/revocation, brute-force throttling and unauthorized access.
 
 ## 5. Roles and permissions
