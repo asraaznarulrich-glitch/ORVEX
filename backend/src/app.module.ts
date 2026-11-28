@@ -1,4 +1,5 @@
 import { Controller, Get, Module } from "@nestjs/common";
+import { PrismaModule } from "./database/prisma.module.js";
 
 const moduleCatalog = [
   { id: "customers", name: "Clients & prospects", category: "business", status: "planned" },
@@ -25,5 +26,8 @@ class ModulesController {
   }
 }
 
-@Module({ controllers: [HealthController, ModulesController] })
+@Module({
+  imports: [PrismaModule],
+  controllers: [HealthController, ModulesController],
+})
 export class AppModule {}
